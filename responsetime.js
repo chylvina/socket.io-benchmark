@@ -5,7 +5,7 @@ var message = "o bispo de constantinopla nao quer se desconstantinopolizar";
 function user(host, port) {
   var start = new Date();
 
-  var socket = io.connect('http://' + host + ':' + port, {'force new connection': true});
+  var socket = io.connect('http://' + host + ':' + port, {'forceNew': true, transports: ['websocket']});
 
   socket.on('connect', function() {
     // send loop message

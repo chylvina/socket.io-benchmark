@@ -1,15 +1,6 @@
 var profiler = require('v8-profiler');
 var io = require('socket.io').listen(3000);
-var exec = require('child_process').exec; 
-
-io.configure(function() {
-  io.set('log level', 1);
-
-  var transport = process.argv.length >= 2 ? process.argv[2] : null;
-  if (transport) {
-    io.set('transports', [transport]);
-  }
-});
+var exec = require('child_process').exec;
 
 // command to read process consumed memory and cpu time
 var getCpuCommand = "ps -p " + process.pid + " -u | grep " + process.pid;
@@ -36,11 +27,11 @@ setInterval(function() {
     var memory = s[3];
 
     var l = [
-      'U: ' + users,
-      'MR/S: ' + countReceived,
-      'MS/S: ' + countSended,
-      'MR/S/U: ' + msuReceived,
-      'MS/S/U: ' + msuSended,
+      'CUsers: ' + users,
+      'MReceived/S: ' + countReceived,
+      'MSended/S: ' + countSended,
+      'MReceived/S/User: ' + msuReceived,
+      'MSended/S/User: ' + msuSended,
       'CPU: ' + cpu,
       'Mem: ' + memory
     ];
@@ -55,7 +46,6 @@ setInterval(function() {
 io.sockets.on('connection', function(socket) {
 
   users++;
-
   socket.on('message', function(message) {
     socket.send(message);
     countReceived++;
