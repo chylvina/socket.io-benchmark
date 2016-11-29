@@ -3,8 +3,17 @@ var io = require('socket.io-client');
 
 var message = "o bispo de constantinopla nao quer se desconstantinopolizar";
 
-function user(shouldBroadcast, host, port) {
-  var socket = io.connect('http://' + host + ':' + port, {'forceNew': true, transports: ['websocket']});
+var argvIndex = 2;
+var transport = 'polling';
+var users = parseInt(process.argv[argvIndex++]);
+var rampUpTime = parseInt(process.argv[argvIndex++]) * 1000;
+var newUserTimeout = rampUpTime / users;
+var shouldBroadcast = process.argv[argvIndex++] === 'broadcast' ? true : false;
+var host = process.argv[argvIndex++] ? process.argv[argvIndex - 1]  : 'localhost';
+var port = process.argv[argvIndex++] ? process.argv[argvIndex - 1]  : '3000';
+
+function user(transport, shouldBroadcast, host, port) {
+  var socket = io.connect('http://' + host + ':' + port, {'forceNew': true, transports: [transport]});
 
   socket.on('connect', function() {
     if (shouldBroadcast) {
@@ -27,15 +36,6 @@ function user(shouldBroadcast, host, port) {
   });
 };
 
-var argvIndex = 2;
-
-var users = parseInt(process.argv[argvIndex++]);
-var rampUpTime = parseInt(process.argv[argvIndex++]) * 1000;
-var newUserTimeout = rampUpTime / users;
-var shouldBroadcast = process.argv[argvIndex++] === 'broadcast' ? true : false;
-var host = process.argv[argvIndex++] ? process.argv[argvIndex - 1]  : 'localhost';
-var port = process.argv[argvIndex++] ? process.argv[argvIndex - 1]  : '3000';
-
 for(var i=0; i<users; i++) {
-  setTimeout(function() { user(shouldBroadcast, host, port); }, i * newUserTimeout);
+  setTimeout(function() { user(transport, shouldBroadcast, host, port); }, i * newUserTimeout);
 };
