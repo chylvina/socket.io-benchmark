@@ -3,7 +3,7 @@ var io = require('socket.io').listen(3000);
 var exec = require('child_process').exec;
 
 // command to read process consumed memory and cpu time
-var getCpuCommand = "ps -p " + process.pid + " -u | grep " + process.pid;
+var getCpuCommand = "ps -p " + process.pid + " -o %cpu,%mem | sed -n '2p'";
 
 var users = 0;
 var countReceived = 0;
@@ -23,8 +23,8 @@ setInterval(function() {
   // call a system command (ps) to get current process resources utilization
   var child = exec(getCpuCommand, function(error, stdout, stderr) {
     var s = stdout.split(/\s+/);
-    var cpu = s[2];
-    var memory = s[3];
+    var cpu = s[1];
+    var memory = s[2];
 
     var l = [
       'CUsers: ' + users,
