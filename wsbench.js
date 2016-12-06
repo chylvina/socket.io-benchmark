@@ -31,6 +31,7 @@ function user(transport, shouldBroadcast, host, port) {
     });
 
     socket.once('disconnect', function() {
+      console.log('disconnect');
       socket.connect();
     });
   });
