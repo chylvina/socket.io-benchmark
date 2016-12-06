@@ -8,6 +8,7 @@ var getCpuCommand = "ps -p " + process.pid + " -o %cpu,%mem | sed -n '2p'";
 var users = 0;
 var countReceived = 0;
 var countSended = 0;
+var offsetTotal = 0;
 
 function roundNumber(num, precision) {
   return parseFloat(Math.round(num * Math.pow(10, precision)) / Math.pow(10, precision));
@@ -32,6 +33,7 @@ setInterval(function() {
       'MSended/S: ' + countSended,
       'MReceived/S/User: ' + msuReceived,
       'MSended/S/User: ' + msuSended,
+      'Offset: ' + Math.round(offsetTotal/countReceived),
       'CPU: ' + cpu,
       'Mem: ' + memory
     ];
@@ -39,6 +41,7 @@ setInterval(function() {
     console.log(l.join(',\t'));
     countReceived = 0;
     countSended = 0;
+    offsetTotal = 0;
   });
 
 }, 1000);
@@ -47,8 +50,10 @@ io.sockets.on('connection', function(socket) {
 
   users++;
   socket.on('message', function(message) {
-    socket.send(message);
     countReceived++;
+    offsetTotal += (new Date()).getTime() - parseInt(message.split('-')[1], 10);
+
+    socket.send(message);
     countSended++;
   });
 

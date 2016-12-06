@@ -9,34 +9,37 @@ var users = parseInt(process.argv[argvIndex++]);
 var rampUpTime = parseInt(process.argv[argvIndex++]) * 1000;
 var newUserTimeout = rampUpTime / users;
 var shouldBroadcast = process.argv[argvIndex++] === 'broadcast' ? true : false;
-var host = process.argv[argvIndex++] ? process.argv[argvIndex - 1]  : 'localhost';
-var port = process.argv[argvIndex++] ? process.argv[argvIndex - 1]  : '3000';
+var host = process.argv[argvIndex++] ? process.argv[argvIndex - 1] : 'localhost';
+var port = process.argv[argvIndex++] ? process.argv[argvIndex - 1] : '3000';
 
-function user(transport, shouldBroadcast, host, port) {
+function user(transport, shouldBroadcast, host, port, index) {
   var socket = io.connect('http://' + host + ':' + port, {'forceNew': true, transports: [transport]});
 
-  socket.on('connect', function() {
+  socket.on('connect', function () {
     if (shouldBroadcast) {
       socket.emit('broadcast', message);
-    } else {
-      socket.send(message);
+    }
+    else {
+      socket.send('abc' + '-' + (new Date()).getTime());
     }
 
-    socket.on('message', function(message) {
-      socket.send(message);
+    socket.on('message', function (message) {
+      socket.send('abc' + '-' + (new Date()).getTime());
     });
 
-    socket.on('broadcastOk', function() {
+    socket.on('broadcastOk', function () {
       socket.emit('broadcast', message);
     });
 
-    socket.once('disconnect', function() {
+    socket.once('disconnect', function () {
       console.log('disconnect');
       socket.connect();
     });
   });
 };
 
-for(var i=0; i<users; i++) {
-  setTimeout(function() { user(transport, shouldBroadcast, host, port); }, i * newUserTimeout);
+for (var i = 0; i < users; i++) {
+  setTimeout(function () {
+    user(transport, shouldBroadcast, host, port, i);
+  }, i * newUserTimeout);
 };
