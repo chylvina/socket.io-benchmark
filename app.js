@@ -29,10 +29,10 @@ setInterval(function() {
 
     var l = [
       'CUsers: ' + users,
-      'MReceived/S: ' + countReceived,
-      'MSended/S: ' + countSended,
-      'MReceived/S/User: ' + msuReceived,
-      'MSended/S/User: ' + msuSended,
+      'MR/S: ' + countReceived,
+      'MS/S: ' + countSended,
+      'MR/S/U: ' + msuReceived,
+      'MS/S/U: ' + msuSended,
       'Offset: ' + Math.round(offsetTotal/countReceived),
       'CPU: ' + cpu,
       'Mem: ' + memory
