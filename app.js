@@ -23,9 +23,9 @@ setInterval(function() {
 
   // call a system command (ps) to get current process resources utilization
   var child = exec(getCpuCommand, function(error, stdout, stderr) {
-    var s = stdout.split(/\s+/);
-    var cpu = s[1];
-    var memory = s[2];
+    var s = stdout.trim().split(/\s+/);
+    var cpu = s[0];
+    var memory = s[1];
 
     var l = [
       'CUsers: ' + users,
