@@ -1,5 +1,3 @@
-var profile = require('v8-profiler');
-
 var WebSocket = require('ws');
 
 var message = "o bispo de constantinopla nao quer se desconstantinopolizar";

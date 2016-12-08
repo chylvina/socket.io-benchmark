@@ -1,4 +1,3 @@
-var profiler = require('v8-profiler');
 var exec = require('child_process').exec;
 
 var WebSocketServer = require('ws').Server

@@ -7,6 +7,6 @@
     "socket.io": "latest",
     "socket.io-client": "latest",
     "utf-8-validate": "^1.2.2",
-    "v8-profiler": "latest"
+    "ws": "^1.1.1"
   }
 }

@@ -1,4 +1,3 @@
-var profiler = require('v8-profiler');
 var io = require('socket.io').listen(3000);
 var exec = require('child_process').exec;
 
