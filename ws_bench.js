@@ -1,5 +1,6 @@
 var profile = require('v8-profiler');
-var io = require('socket.io-client');
+
+var WebSocket = require('ws');
 
 var message = "o bispo de constantinopla nao quer se desconstantinopolizar";
 
@@ -13,29 +14,22 @@ var host = process.argv[argvIndex++] ? process.argv[argvIndex - 1] : 'localhost'
 var port = process.argv[argvIndex++] ? process.argv[argvIndex - 1] : '3000';
 
 function user(transport, shouldBroadcast, host, port, index) {
-  var socket = io.connect('http://' + host + ':' + port, {'forceNew': true, transports: [transport]});
+  var ws = new WebSocket('ws://localhost:3000');
 
-  socket.on('connect', function () {
+  ws.on('open', function open() {
     if (shouldBroadcast) {
-      socket.emit('broadcast', message);
+      ws.emit('broadcast', message);
     }
     else {
-      socket.send('abc' + '-' + (new Date()).getTime());
+      ws.send('abc' + '-' + (new Date()).getTime());
     }
 
-    socket.on('message', function (message) {
-      socket.send('abc' + '-' + (new Date()).getTime());
+    ws.on('message', function (message) {
+      ws.send('abc' + '-' + (new Date()).getTime());
     });
 
-    socket.on('broadcastOk', function () {
-      socket.emit('broadcast', message);
-    });
-
-    socket.once('disconnect', function () {
-      console.log('disconnect');
-      socket.connect();
-    });
   });
+
 };
 
 for (var i = 0; i < users; i++) {
