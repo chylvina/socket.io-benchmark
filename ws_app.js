@@ -1,6 +1,8 @@
 var profiler = require('v8-profiler');
-var io = require('socket.io').listen(3000);
 var exec = require('child_process').exec;
+
+var WebSocketServer = require('ws').Server
+    , wss = new WebSocketServer({ port: 3000 });
 
 // command to read process consumed memory and cpu time
 var getCpuCommand = "ps -p " + process.pid + " -o %cpu,%mem | sed -n '2p'";
@@ -46,28 +48,18 @@ setInterval(function() {
 
 }, 1000);
 
-io.sockets.on('connection', function(socket) {
+wss.on('connection', function connection(ws) {
 
   users++;
-  socket.on('message', function(message) {
+
+  ws.on('message', function incoming(message) {
     countReceived++;
     offsetTotal += (new Date()).getTime() - parseInt(message.split('-')[1], 10);
 
-    socket.send(message);
+    ws.send(message);
     countSended++;
   });
 
-  socket.on('broadcast', function(message) {
-    countReceived++;
-
-    io.sockets.emit('broadcast', message);
-    countSended += users;
-
-    socket.emit('broadcastOk');
-  });
-
-  socket.on('disconnect', function() {
-    users--;
-  })
+  ws.send('something');
 });
 
