@@ -12,7 +12,8 @@ var host = process.argv[argvIndex++] ? process.argv[argvIndex - 1] : 'localhost'
 var port = process.argv[argvIndex++] ? process.argv[argvIndex - 1] : '3000';
 
 function user(transport, shouldBroadcast, host, port, index) {
-  var ws = new WebSocket('ws://localhost:3000');
+  // bug: https://github.com/websockets/ws/pull/608
+  var ws = new WebSocket('ws://localhost:3000', { perMessageDeflate: false });
 
   ws.on('open', function open() {
     if (shouldBroadcast) {
